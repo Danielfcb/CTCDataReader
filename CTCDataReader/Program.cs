@@ -55,6 +55,9 @@ namespace CTCDataReader
                     List<DataFileRecordModel> duplicatedRecords = dataValidator.DuplicatedRecords;
                     List<string> invalidRecords = dataValidator.InvalidRecords;
 
+                    LogWriter.WriteLog(validRecords.Count() + " valid records found!");
+                    LogWriter.WriteLog(duplicatedRecords.Count() + " duplicated record found!");
+                    
                     LogWriter.WriteLog("Inserting valid data form " + file + " into the database");
                     // Employees with "Manager" role need to be inserted (if they don't exist) or updated (if they are already in database)
                     dataAccessLayer.InsertIntoEmployeesTable(dataValidator.GetValidatedManagerEmployees(), true);
