@@ -1,0 +1,470 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MasterRosterContext.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Bookings">
+          <Key>
+            <PropertyRef Name="booking_id" />
+          </Key>
+          <Property Name="booking_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="employee_id" Type="int" Nullable="false" />
+          <Property Name="booking_type_code" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="comment" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="start_date" Type="datetime" Nullable="false" />
+          <Property Name="end_date" Type="datetime" Nullable="false" />
+          <Property Name="deleted_flag" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BookingTypes">
+          <Key>
+            <PropertyRef Name="booking_type_code" />
+          </Key>
+          <Property Name="booking_type_code" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="booking_type_name" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Crews">
+          <Key>
+            <PropertyRef Name="crew_id" />
+          </Key>
+          <Property Name="crew_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="crew_code" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Departments">
+          <Key>
+            <PropertyRef Name="department_id" />
+          </Key>
+          <Property Name="department_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="department_name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Employees">
+          <Key>
+            <PropertyRef Name="employee_id" />
+          </Key>
+          <Property Name="employee_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="employee_num" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="status" Type="bit" Nullable="false" />
+          <Property Name="seniority_date" Type="datetime" Nullable="false" />
+          <Property Name="roletype_id" Type="int" />
+          <Property Name="department_id" Type="int" />
+          <Property Name="crew_id" Type="int" />
+          <Property Name="supervisor_id" Type="int" />
+        </EntityType>
+        <EntityType Name="RoleTypes">
+          <Key>
+            <PropertyRef Name="roletype_id" />
+          </Key>
+          <Property Name="roletype_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="roletype_name" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="reports_to_id" Type="int" />
+          <Property Name="max_per_deptcrew" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Bookings_BookingType">
+          <End Role="BookingTypes" Type="Self.BookingTypes" Multiplicity="1" />
+          <End Role="Bookings" Type="Self.Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BookingTypes">
+              <PropertyRef Name="booking_type_code" />
+            </Principal>
+            <Dependent Role="Bookings">
+              <PropertyRef Name="booking_type_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bookings_EmployeeId">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1" />
+          <End Role="Bookings" Type="Self.Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="employee_id" />
+            </Principal>
+            <Dependent Role="Bookings">
+              <PropertyRef Name="employee_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Employees_Crews">
+          <End Role="Crews" Type="Self.Crews" Multiplicity="0..1" />
+          <End Role="Employees" Type="Self.Employees" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crews">
+              <PropertyRef Name="crew_id" />
+            </Principal>
+            <Dependent Role="Employees">
+              <PropertyRef Name="crew_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Employees_Departments">
+          <End Role="Departments" Type="Self.Departments" Multiplicity="0..1" />
+          <End Role="Employees" Type="Self.Employees" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departments">
+              <PropertyRef Name="department_id" />
+            </Principal>
+            <Dependent Role="Employees">
+              <PropertyRef Name="department_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Employees_RoleTypes">
+          <End Role="RoleTypes" Type="Self.RoleTypes" Multiplicity="0..1" />
+          <End Role="Employees" Type="Self.Employees" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoleTypes">
+              <PropertyRef Name="roletype_id" />
+            </Principal>
+            <Dependent Role="Employees">
+              <PropertyRef Name="roletype_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Employees_Supervisors">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="0..1" />
+          <End Role="Employees1" Type="Self.Employees" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="employee_id" />
+            </Principal>
+            <Dependent Role="Employees1">
+              <PropertyRef Name="supervisor_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RoleTypes_ReportsTo">
+          <End Role="RoleTypes" Type="Self.RoleTypes" Multiplicity="0..1" />
+          <End Role="RoleTypes1" Type="Self.RoleTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoleTypes">
+              <PropertyRef Name="roletype_id" />
+            </Principal>
+            <Dependent Role="RoleTypes1">
+              <PropertyRef Name="reports_to_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MasterRosterContextStoreContainer">
+          <EntitySet Name="Bookings" EntityType="Self.Bookings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BookingTypes" EntityType="Self.BookingTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Crews" EntityType="Self.Crews" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Departments" EntityType="Self.Departments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Employees" EntityType="Self.Employees" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RoleTypes" EntityType="Self.RoleTypes" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Bookings_BookingType" Association="Self.FK_Bookings_BookingType">
+            <End Role="BookingTypes" EntitySet="BookingTypes" />
+            <End Role="Bookings" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bookings_EmployeeId" Association="Self.FK_Bookings_EmployeeId">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="Bookings" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employees_Crews" Association="Self.FK_Employees_Crews">
+            <End Role="Crews" EntitySet="Crews" />
+            <End Role="Employees" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employees_Departments" Association="Self.FK_Employees_Departments">
+            <End Role="Departments" EntitySet="Departments" />
+            <End Role="Employees" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employees_RoleTypes" Association="Self.FK_Employees_RoleTypes">
+            <End Role="RoleTypes" EntitySet="RoleTypes" />
+            <End Role="Employees" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employees_Supervisors" Association="Self.FK_Employees_Supervisors">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="Employees1" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoleTypes_ReportsTo" Association="Self.FK_RoleTypes_ReportsTo">
+            <End Role="RoleTypes" EntitySet="RoleTypes" />
+            <End Role="RoleTypes1" EntitySet="RoleTypes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MasterRosterContext" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Booking">
+          <Key>
+            <PropertyRef Name="booking_id" />
+          </Key>
+          <Property Name="booking_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="employee_id" Type="Int32" Nullable="false" />
+          <Property Name="booking_type_code" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="comment" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="start_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="end_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="deleted_flag" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="BookingType" Relationship="Self.FK_Bookings_BookingType" FromRole="Bookings" ToRole="BookingTypes" />
+          <NavigationProperty Name="Employee" Relationship="Self.FK_Bookings_EmployeeId" FromRole="Bookings" ToRole="Employees" />
+        </EntityType>
+        <EntityType Name="BookingType">
+          <Key>
+            <PropertyRef Name="booking_type_code" />
+          </Key>
+          <Property Name="booking_type_code" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="booking_type_name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Bookings" Relationship="Self.FK_Bookings_BookingType" FromRole="BookingTypes" ToRole="Bookings" />
+        </EntityType>
+        <EntityType Name="Crew">
+          <Key>
+            <PropertyRef Name="crew_id" />
+          </Key>
+          <Property Name="crew_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="crew_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Employees" Relationship="Self.FK_Employees_Crews" FromRole="Crews" ToRole="Employees" />
+        </EntityType>
+        <EntityType Name="Department">
+          <Key>
+            <PropertyRef Name="department_id" />
+          </Key>
+          <Property Name="department_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="department_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Employees" Relationship="Self.FK_Employees_Departments" FromRole="Departments" ToRole="Employees" />
+        </EntityType>
+        <EntityType Name="Employee">
+          <Key>
+            <PropertyRef Name="employee_id" />
+          </Key>
+          <Property Name="employee_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="employee_num" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="status" Type="Boolean" Nullable="false" />
+          <Property Name="seniority_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="roletype_id" Type="Int32" />
+          <Property Name="department_id" Type="Int32" />
+          <Property Name="crew_id" Type="Int32" />
+          <Property Name="supervisor_id" Type="Int32" />
+          <NavigationProperty Name="Bookings" Relationship="Self.FK_Bookings_EmployeeId" FromRole="Employees" ToRole="Bookings" />
+          <NavigationProperty Name="Crew" Relationship="Self.FK_Employees_Crews" FromRole="Employees" ToRole="Crews" />
+          <NavigationProperty Name="Department" Relationship="Self.FK_Employees_Departments" FromRole="Employees" ToRole="Departments" />
+          <NavigationProperty Name="RoleType" Relationship="Self.FK_Employees_RoleTypes" FromRole="Employees" ToRole="RoleTypes" />
+          <NavigationProperty Name="Employees1" Relationship="Self.FK_Employees_Supervisors" FromRole="Employees" ToRole="Employees1" />
+          <NavigationProperty Name="Employee1" Relationship="Self.FK_Employees_Supervisors" FromRole="Employees1" ToRole="Employees" />
+        </EntityType>
+        <EntityType Name="RoleType">
+          <Key>
+            <PropertyRef Name="roletype_id" />
+          </Key>
+          <Property Name="roletype_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="roletype_name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="reports_to_id" Type="Int32" />
+          <Property Name="max_per_deptcrew" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Employees" Relationship="Self.FK_Employees_RoleTypes" FromRole="RoleTypes" ToRole="Employees" />
+          <NavigationProperty Name="RoleTypes1" Relationship="Self.FK_RoleTypes_ReportsTo" FromRole="RoleTypes" ToRole="RoleTypes1" />
+          <NavigationProperty Name="RoleType1" Relationship="Self.FK_RoleTypes_ReportsTo" FromRole="RoleTypes1" ToRole="RoleTypes" />
+        </EntityType>
+        <Association Name="FK_Bookings_BookingType">
+          <End Role="BookingTypes" Type="Self.BookingType" Multiplicity="1" />
+          <End Role="Bookings" Type="Self.Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BookingTypes">
+              <PropertyRef Name="booking_type_code" />
+            </Principal>
+            <Dependent Role="Bookings">
+              <PropertyRef Name="booking_type_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bookings_EmployeeId">
+          <End Role="Employees" Type="Self.Employee" Multiplicity="1" />
+          <End Role="Bookings" Type="Self.Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="employee_id" />
+            </Principal>
+            <Dependent Role="Bookings">
+              <PropertyRef Name="employee_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Employees_Crews">
+          <End Role="Crews" Type="Self.Crew" Multiplicity="0..1" />
+          <End Role="Employees" Type="Self.Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crews">
+              <PropertyRef Name="crew_id" />
+            </Principal>
+            <Dependent Role="Employees">
+              <PropertyRef Name="crew_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Employees_Departments">
+          <End Role="Departments" Type="Self.Department" Multiplicity="0..1" />
+          <End Role="Employees" Type="Self.Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departments">
+              <PropertyRef Name="department_id" />
+            </Principal>
+            <Dependent Role="Employees">
+              <PropertyRef Name="department_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Employees_RoleTypes">
+          <End Role="RoleTypes" Type="Self.RoleType" Multiplicity="0..1" />
+          <End Role="Employees" Type="Self.Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoleTypes">
+              <PropertyRef Name="roletype_id" />
+            </Principal>
+            <Dependent Role="Employees">
+              <PropertyRef Name="roletype_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Employees_Supervisors">
+          <End Role="Employees" Type="Self.Employee" Multiplicity="0..1" />
+          <End Role="Employees1" Type="Self.Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="employee_id" />
+            </Principal>
+            <Dependent Role="Employees1">
+              <PropertyRef Name="supervisor_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RoleTypes_ReportsTo">
+          <End Role="RoleTypes" Type="Self.RoleType" Multiplicity="0..1" />
+          <End Role="RoleTypes1" Type="Self.RoleType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoleTypes">
+              <PropertyRef Name="roletype_id" />
+            </Principal>
+            <Dependent Role="RoleTypes1">
+              <PropertyRef Name="reports_to_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MasterRosterEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Bookings" EntityType="Self.Booking" />
+          <EntitySet Name="BookingTypes" EntityType="Self.BookingType" />
+          <EntitySet Name="Crews" EntityType="Self.Crew" />
+          <EntitySet Name="Departments" EntityType="Self.Department" />
+          <EntitySet Name="Employees" EntityType="Self.Employee" />
+          <EntitySet Name="RoleTypes" EntityType="Self.RoleType" />
+          <AssociationSet Name="FK_Bookings_BookingType" Association="Self.FK_Bookings_BookingType">
+            <End Role="BookingTypes" EntitySet="BookingTypes" />
+            <End Role="Bookings" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bookings_EmployeeId" Association="Self.FK_Bookings_EmployeeId">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="Bookings" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employees_Crews" Association="Self.FK_Employees_Crews">
+            <End Role="Crews" EntitySet="Crews" />
+            <End Role="Employees" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employees_Departments" Association="Self.FK_Employees_Departments">
+            <End Role="Departments" EntitySet="Departments" />
+            <End Role="Employees" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employees_RoleTypes" Association="Self.FK_Employees_RoleTypes">
+            <End Role="RoleTypes" EntitySet="RoleTypes" />
+            <End Role="Employees" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employees_Supervisors" Association="Self.FK_Employees_Supervisors">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="Employees1" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoleTypes_ReportsTo" Association="Self.FK_RoleTypes_ReportsTo">
+            <End Role="RoleTypes" EntitySet="RoleTypes" />
+            <End Role="RoleTypes1" EntitySet="RoleTypes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MasterRosterContextStoreContainer" CdmEntityContainer="MasterRosterEntities">
+          <EntitySetMapping Name="Bookings">
+            <EntityTypeMapping TypeName="MasterRosterContext.Booking">
+              <MappingFragment StoreEntitySet="Bookings">
+                <ScalarProperty Name="booking_id" ColumnName="booking_id" />
+                <ScalarProperty Name="employee_id" ColumnName="employee_id" />
+                <ScalarProperty Name="booking_type_code" ColumnName="booking_type_code" />
+                <ScalarProperty Name="comment" ColumnName="comment" />
+                <ScalarProperty Name="start_date" ColumnName="start_date" />
+                <ScalarProperty Name="end_date" ColumnName="end_date" />
+                <ScalarProperty Name="deleted_flag" ColumnName="deleted_flag" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BookingTypes">
+            <EntityTypeMapping TypeName="MasterRosterContext.BookingType">
+              <MappingFragment StoreEntitySet="BookingTypes">
+                <ScalarProperty Name="booking_type_code" ColumnName="booking_type_code" />
+                <ScalarProperty Name="booking_type_name" ColumnName="booking_type_name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Crews">
+            <EntityTypeMapping TypeName="MasterRosterContext.Crew">
+              <MappingFragment StoreEntitySet="Crews">
+                <ScalarProperty Name="crew_id" ColumnName="crew_id" />
+                <ScalarProperty Name="crew_code" ColumnName="crew_code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Departments">
+            <EntityTypeMapping TypeName="MasterRosterContext.Department">
+              <MappingFragment StoreEntitySet="Departments">
+                <ScalarProperty Name="department_id" ColumnName="department_id" />
+                <ScalarProperty Name="department_name" ColumnName="department_name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Employees">
+            <EntityTypeMapping TypeName="MasterRosterContext.Employee">
+              <MappingFragment StoreEntitySet="Employees">
+                <ScalarProperty Name="employee_id" ColumnName="employee_id" />
+                <ScalarProperty Name="employee_num" ColumnName="employee_num" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="seniority_date" ColumnName="seniority_date" />
+                <ScalarProperty Name="roletype_id" ColumnName="roletype_id" />
+                <ScalarProperty Name="department_id" ColumnName="department_id" />
+                <ScalarProperty Name="crew_id" ColumnName="crew_id" />
+                <ScalarProperty Name="supervisor_id" ColumnName="supervisor_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RoleTypes">
+            <EntityTypeMapping TypeName="MasterRosterContext.RoleType">
+              <MappingFragment StoreEntitySet="RoleTypes">
+                <ScalarProperty Name="roletype_id" ColumnName="roletype_id" />
+                <ScalarProperty Name="roletype_name" ColumnName="roletype_name" />
+                <ScalarProperty Name="reports_to_id" ColumnName="reports_to_id" />
+                <ScalarProperty Name="max_per_deptcrew" ColumnName="max_per_deptcrew" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
